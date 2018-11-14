@@ -1,0 +1,166 @@
+﻿@model FooterModel
+@using Nop.Core
+@using Nop.Core.Domain.Tax
+@using Nop.Core.Infrastructure
+@using Nop.Web.Models.Common;
+
+@if (Request.Url.AbsolutePath == "/")
+{
+<div class="container">
+	<div class="row">
+		<!-- Footer Kutular-->
+		<div class="col-xs-12 footer__standartlar">
+			<div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 footer__standartlar__item">
+				<img class="img-responsive" src="~/Themes/ags2017/Content/Index/img/std1.png">
+			</div>
+			<div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 footer__standartlar__item">
+				<img class="img-responsive" src="~/Themes/ags2017/Content/Index/img/std2.png">
+			</div>
+			<div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 footer__standartlar__item">
+				<img class="img-responsive" src="~/Themes/ags2017/Content/Index/img/std3.png">
+			</div>
+			<div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 footer__standartlar__item last">
+				<img class="img-responsive" src="~/Themes/ags2017/Content/Index/img/std4.png">
+			</div>
+		</div>
+	</div>
+</div>
+}
+<div class="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 footer-content">
+				<div class="col-xs-12 text-center col-sm-4">
+					@Html.Action("NewsletterBox", "Newsletter")
+					@Html.Action("Social", "Common")
+
+					<div class="destek-hatti-container">
+						<img src="/Themes/ags2017/Content/Index/img/destek_hatti.png" class="img-responsive inl">
+						<span class="destek_hatti">0530 874 3255</span>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-8">
+					<span class="visible-xs" id="footer-kategori-baslik">Kurumsal</span>
+					<div>
+						<ul class="col-xs-12 col-sm-3">
+							<li class="hidden-xs" id="footer-kategori-baslik">Kurumsal</li>
+							@foreach (var topic in Model.Topics.Where(x => x.IncludeInFooterColumn1).ToList())
+							{
+								<li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
+							}
+						</ul>
+					</div>
+					<span class="visible-xs" id="footer-kategori-baslik">Yardım</span>
+					<div>
+						<ul class="col-xs-12 col-sm-3">
+							<li id="footer-kategori-baslik">Yardım</li>
+							<li><a href="@Url.RouteUrl("ContactUs")">@T("ContactUs")</a></li>
+							@if (Model.SitemapEnabled)
+							{
+								<li><a href="@Url.RouteUrl("Sitemap")">@T("Sitemap")</a></li>
+							}
+						</ul>
+					</div>
+					<span class="visible-xs" id="footer-kategori-baslik">Sözleşmeler</span>
+					<div>
+						<ul class="col-xs-12 col-sm-3">
+							<li class="hidden-xs" id="footer-kategori-baslik">Sözleşmeler</li>
+							@foreach (var topic in Model.Topics.Where(x => x.IncludeInFooterColumn3).ToList())
+							{
+								<li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
+							}
+						</ul>
+					</div>
+					<span class="visible-xs" id="footer-kategori-baslik">Hızlı Menü</span>
+					<div>
+						<ul class="col-xs-12 col-sm-3">
+							<li class="hidden-xs" id="footer-kategori-baslik">Hızlı Menü</li>
+							<li><a href="@Url.RouteUrl("CustomerInfo")">@T("Account.MyAccount")</a></li>
+							<li><a href="@Url.RouteUrl("CustomerOrders")">@T("Account.CustomerOrders")</a></li>
+							@if (Model.ShoppingCartEnabled)
+							{
+								<li><a href="@Url.RouteUrl("ShoppingCart")">@T("ShoppingCart")</a></li>
+							}
+							<li><a href="@Url.RouteUrl("CustomerAddresses")">@T("Account.CustomerAddresses")</a></li>
+							@if (Model.WishlistEnabled)
+							{
+								<li><a href="@Url.RouteUrl("Wishlist")">@T("Wishlist")</a></li>
+							}
+						</ul>
+					</div>
+				</div>
+			</div>
+				
+				
+		</div>
+	</div>
+</div>
+
+<div class="footer__enalt">
+	<div class="container-fluid">
+		<div class="container">
+		<div class="row">
+			<span class="footer__copyright fl small" style="margin-left: 80px">Copyright © 2018 DECOR ART DESIGN Tüm hakları saklıdır.</span>
+			<div class="fr bankalar">
+				<img src="~/Themes/ags2017/Content/img/banka-logo/chip-and-pin.png">
+				<img src="~/Themes/ags2017/Content/img/banka-logo/master-secure-code.png">
+				<img src="~/Themes/ags2017/Content/img/banka-logo/rapid-ssl.png">
+				<img src="~/Themes/ags2017/Content/img/banka-logo/troy.png">
+				<img src="~/Themes/ags2017/Content/img/banka-logo/verified-by-visa.png">
+			</div>
+		</div>
+		</div>
+		<div class="row">
+			<div class="footer-enalt-logo col-xs-12">
+			<span style="font-size:6px">Powered by <a href="http://www.nopcommerce.com/">nopCommerce</a></span>
+				<a href="http://www.aldebaranbilisim.com/"><img class="footer__logo fr" src="https://hataylokum.com/Themes/Default/Content/assets/img/aldebaran.png" /></a>
+			</div>
+		</div>
+	</div>
+</div>
+<a id="sideMenuToggle" class="visible-xs" href="#yanMenu"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+
+<!--Yan menü-->
+<div id="ags__sidr" class="sideNav">
+	<a href="javascript:void(0)" class="sideNav__close">←  Menüyü Kapat </a>
+	<div class="sideNav__content">
+		<div class="yanmenu-kategori-baslik">
+			KATEGORİLER
+		</div>
+		<!-- Yan Menü içeriği js ile dinamik olarak buraya yüklenir -->
+	</div>
+</div>
+<div class="isMobile"></div>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.footer-block .title').click(function () {
+			var e = window, a = 'inner';
+			if (!('innerWidth' in window)) {
+				a = 'client';
+				e = document.documentElement || document.body;
+			}
+			var result = { width: e[a + 'Width'], height: e[a + 'Height'] };
+			if (result.width < 769) {
+				$(this).siblings('.list').slideToggle('slow');
+			}
+		});
+	});
+</script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.block .title').click(function () {
+			var e = window, a = 'inner';
+			if (!('innerWidth' in window)) {
+				a = 'client';
+				e = document.documentElement || document.body;
+			}
+			var result = { width: e[a + 'Width'], height: e[a + 'Height'] };
+			if (result.width < 1001) {
+				$(this).siblings('.listbox').slideToggle('slow');
+			}
+		});
+	});
+</script>
+<script src="~/Themes/ags2017/Content/js/main.js"></script>

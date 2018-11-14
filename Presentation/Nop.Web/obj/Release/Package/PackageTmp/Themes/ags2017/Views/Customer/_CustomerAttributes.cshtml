@@ -1,0 +1,120 @@
+﻿@model IList<Nop.Web.Models.Customer.CustomerAttributeModel>
+@using Nop.Core.Domain.Catalog;
+@foreach (var attribute in Model)
+{
+    string controlId = string.Format("customer_attribute_{0}", attribute.Id);
+    string textPrompt = attribute.Name;
+
+    <div class="inputs custom-attributes">
+        <label>@textPrompt:</label>
+        
+        @switch (attribute.AttributeControlType)
+        {
+            case AttributeControlType.DropdownList:
+                {
+                    <div class="input-with-icon">
+                        <span class="input-icon">
+                            <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-question.png" class="img-responsive">
+                            @if (attribute.IsRequired)
+                            {
+                                <span class="input-required">@Html.RequiredHint()</span>
+                            }
+                        </span>
+                        <select name="@(controlId)" id="@(controlId)">
+                            @if (!attribute.IsRequired)
+                            {
+                                <option value="0">---</option>
+                            }
+                            @foreach (var attributeValue in attribute.Values)
+                            {
+                                <option selected="@attributeValue.IsPreSelected" value="@attributeValue.Id">@attributeValue.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                }
+                break;
+            case AttributeControlType.RadioList:
+                {
+                    <div class="input-with-icon">
+                        <span class="input-icon">
+                            <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-question.png" class="img-responsive">
+                            @if (attribute.IsRequired)
+                            {
+                                <span class="input-required">@Html.RequiredHint()</span>
+                            }
+                        </span>
+                        <ul class="option-list">
+                            @foreach (var attributeValue in attribute.Values)
+                            {
+                                <li>
+                                    <input id="@(controlId)_@(attributeValue.Id)" type="radio" name="@(controlId)" value="@attributeValue.Id" checked="@attributeValue.IsPreSelected" />
+                                    <label for="@(controlId)_@(attributeValue.Id)">@attributeValue.Name</label>
+                                </li>
+                            }
+                        </ul>
+                        </div>
+                }
+                break;
+            case AttributeControlType.Checkboxes:
+            case AttributeControlType.ReadonlyCheckboxes:
+                {
+                    <div class="input-with-icon">
+                        <span class="input-icon">
+                            <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-question.png" class="img-responsive">
+                            @if (attribute.IsRequired)
+                            {
+                                <span class="input-required">@Html.RequiredHint()</span>
+                            }
+                        </span>
+                        <ul class="option-list">
+                            @foreach (var attributeValue in attribute.Values)
+                            {
+                                <li>
+                                    <input id="@(controlId)_@(attributeValue.Id)" type="checkbox" name="@(controlId)" value="@attributeValue.Id" checked="@attributeValue.IsPreSelected" @(attribute.AttributeControlType == AttributeControlType.ReadonlyCheckboxes ? Html.Raw(" disabled=\"disabled\"") : null) />
+                                    <label for="@(controlId)_@(attributeValue.Id)">@attributeValue.Name</label>
+                                </li>
+                            }
+                        </ul>
+                        </div>
+                }
+                break;
+            case AttributeControlType.TextBox:
+                {
+                    <div class="input-with-icon">
+                        <span class="input-icon">
+                            <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-question.png" class="img-responsive">
+                            @if (attribute.IsRequired)
+                            {
+                                <span class="input-required">@Html.RequiredHint()</span>
+                            }
+                        </span>
+                        <input name="@(controlId)" type="text" class="textbox form-control" id="@(controlId)" value="@attribute.DefaultValue" />
+                        </div>
+                }
+                break;
+            case AttributeControlType.MultilineTextbox:
+                {
+                    <div class="input-with-icon">
+                        <span class="input-icon">
+                            <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-question.png" class="img-responsive">
+                            @if (attribute.IsRequired)
+                            {
+                                <span class="input-required">@Html.RequiredHint()</span>
+                            }
+                        </span>
+                        <textarea id="@(controlId)" class="form-control" name="@(controlId)">@attribute.DefaultValue</textarea>
+                        </div>
+                        }
+                        break;
+                        case AttributeControlType.Datepicker:
+                        case AttributeControlType.FileUpload:
+                        case AttributeControlType.ColorSquares:
+                        case AttributeControlType.ImageSquares:
+                        {
+                        //not support attribute type
+                        }
+                        break;
+                        }
+                    </div>
+                }

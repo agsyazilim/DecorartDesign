@@ -1,0 +1,43 @@
+﻿@model ProductDetailsModel.GiftCardModel
+@using Nop.Web.Models.Catalog;
+@if (Model.IsGiftCard)
+{
+    <div class="giftcard">
+        <div class="row">
+            @Html.LabelFor(model => model.RecipientName, new { @class = "col-lg-3 col-md-3 col-sm-3 col-xs-12" }, ":")
+            <span class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                @Html.TextBoxFor(model => model.RecipientName, new { @class = "recipient-name" })
+            </span>
+        </div>
+        @if (Model.GiftCardType == Nop.Core.Domain.Catalog.GiftCardType.Virtual)
+        {
+            <div class="row">
+                @Html.LabelFor(model => model.RecipientEmail, new { @class = "col-lg-3 col-md-3 col-sm-3 col-xs-12" }, ":")
+                <span class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                    @Html.TextBoxFor(model => model.RecipientEmail, new { @class = "recipient-email" })
+                    </span>
+</div>
+        }
+        <div class="row">
+            @Html.LabelFor(model => model.SenderName, new { @class = "col-lg-3 col-md-3 col-sm-3 col-xs-12" }, ":") 
+            <span class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                @Html.TextBoxFor(model => model.SenderName, new { @class = "sender-name" })
+                </span>
+</div>
+        @if (Model.GiftCardType == Nop.Core.Domain.Catalog.GiftCardType.Virtual)
+        {
+            <div class="row">
+                @Html.LabelFor(model => model.SenderEmail, new { @class = "col-lg-3 col-md-3 col-sm-3 col-xs-12" }, ":")
+                <span class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                    @Html.TextBoxFor(model => model.SenderEmail, new { @class = "sender-email" })
+                    </span>
+</div>
+        }
+        <div class="row">
+            @Html.LabelFor(model => model.Message, new { @class = "col-lg-3 col-md-3 col-sm-3 col-xs-12" }, ":")
+            <span class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                @Html.TextAreaFor(model => model.Message, new { @class = "message" })
+                </span>
+</div>
+    </div>
+}

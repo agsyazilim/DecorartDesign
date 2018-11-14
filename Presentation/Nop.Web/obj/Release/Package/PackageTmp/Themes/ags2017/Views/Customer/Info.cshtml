@@ -1,0 +1,186 @@
+﻿@model CustomerInfoModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+    //page class
+    //Html.AppendPageCssClassParts("html-account-page");
+    //Html.AppendPageCssClassParts("html-customer-info-page");
+}
+@section left
+{
+    @Html.Action("CustomerNavigation", "Customer", new { selectedTabId = CustomerNavigationEnum.Info })
+}
+@if (Model.CountryEnabled && Model.StateProvinceEnabled)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#@Html.FieldIdFor(model => model.CountryId)").change(function () {
+                var selectedItem = $(this).val();
+                var ddlStates = $("#@Html.FieldIdFor(model => model.StateProvinceId)");
+             var statesProgress = $("#states-loading-progress");
+             statesProgress.show();
+             $.ajax({
+                 cache: false,
+                 type: "GET",
+                 url: "@(Url.RouteUrl("GetStatesByCountryId"))",
+                 data: { "countryId": selectedItem, "addSelectStateItem": "true" },
+                    success: function (data) {
+                        ddlStates.html('');
+                        $.each(data, function (id, option) {
+                            ddlStates.append($('<option></option>').val(option.id).html(option.name));
+                        });
+                        statesProgress.hide();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve states.');
+                        statesProgress.hide();
+                    }
+                });
+            });
+        });
+    </script>
+}
+<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12 account-area">
+    <h3 class="section-main-title font-uppercase-title">
+        @T("Account.MyAccount") - @T("Account.CustomerInfo")
+    </h3>
+    <div class="col-lg-8 col-md-9 col-sm-9 col-xs-12 prl-0">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="register-form">
+                <div class="row">
+                    @{ var validationSummary = Html.ValidationSummary(true); }
+                    @if (!MvcHtmlString.IsNullOrEmpty(validationSummary))
+                    {
+                        <div class="message-error">
+                            @validationSummary
+                        </div>
+                    }
+
+                    <div class="form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-4 prl-0">
+                            <label class="label-head capitalize text-label" for="FirstName">Ad</label>
+                            <span>*</span>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-8  prl-0">
+                            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control text-input" })
+                            @Html.ValidationMessageFor(model => model.FirstName)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-4 prl-0">
+                            <label class="label-head capitalize text-label" for="LastName">Soyad</label>
+                            <span>*</span>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-8 prl-0">
+                            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control text-input" })
+                            @Html.ValidationMessageFor(model => model.LastName)
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-4 prl-0">
+                            <label class="label-head capitalize text-label" for="Email">Email</label>
+                            <span>*</span>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-8 prl-0">
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control text-input" })
+                            @Html.ValidationMessageFor(model => model.Email)
+                        </div>
+                    </div>
+                    @if (Model.CompanyEnabled || Model.DisplayVatNumber)
+                    {
+                        <div class="form-group">
+                            <div class="col-lg-3 col-md-4 col-sm-4 prl-0">
+                                <label class="label-head capitalize text-label" for="Email">Firma</label>
+                                <span>*</span>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-8 prl-0">
+                                @Html.TextBoxFor(model => model.Company, new { @class = "form-control text-input" })
+                                @Html.ValidationMessageFor(model => model.Company)
+                            </div>
+                        </div>
+                    
+                    }
+                    @if (Model.GenderEnabled)
+                    {
+                        <div class="form-group">
+                            <div class="col-lg-3 col-md-4  col-sm-4 prl-0">
+                                <label class="label-head capitalize text-label" for="Gender">Cinsiyet</label>
+                                <span>*</span>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-8 prl-0 gender">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 prl-0">
+                                        <div class="radio mt-0">
+                                            <label class="text-label">
+                                                @Html.RadioButton("Gender", "M", (Model.Gender == "M"), new { id = "gender-male" })
+                                                @T("Account.Fields.Gender.Male")
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 prl-0">
+                                        <div class="radio mt-0">
+                                            <label class="text-label">
+                                                @Html.RadioButton("Gender", "F", (Model.Gender == "F"), new { id = "gender-female" })
+                                                @T("Account.Fields.Gender.Female")
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 prl-0  register-links">
+                        <div class="form-group  clearfix">
+                            @*<input class="check-box labelauty" id="Newsletter" name="Newsletter" type="checkbox" value="true">*@
+                            @Html.CheckBoxFor(model => model.Newsletter, new { @class = "check-box labelauty" })
+
+                            <label for="Newsletter" class="text-label">Tarafınızdan gönderilecek bilgilendirme e-postalarını almak istiyorum.</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 col-xs-12 prl-0">
+                <input type="submit" value="@T("Common.Save")" name="save-info-button" class="btn login-button text-uppercase" />
+
+            </div>
+
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    function removeexternalassociation(itemId) {
+        if (confirm('@T("Common.AreYouSure")')) {
+            var postData = {
+                id: itemId
+            };
+            addAntiForgeryToken(postData);
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '@Url.Action("RemoveExternalAssociation", "Customer")',
+                data: postData,
+                dataType: 'json',
+                success: function (data) {
+                    location.href = data.redirect;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to delete');
+                }
+            });
+        } 
+        return false;
+    }
+</script>

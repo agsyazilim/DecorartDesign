@@ -1,0 +1,93 @@
+﻿@model LoginModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core;
+@using Nop.Core.Infrastructure;
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Login").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-login-page");
+
+    //register URL with return URL (if specified)
+    var registerUrl = Url.RouteUrl("Register");
+    if (!String.IsNullOrEmpty(this.Context.Request.QueryString["returnUrl"]))
+    {
+        var webHelper = EngineContext.Current.Resolve<IWebHelper>();
+        registerUrl = webHelper.ModifyQueryString(registerUrl, "returnurl=" + HttpUtility.UrlEncode(this.Context.Request.QueryString["returnUrl"]), null);
+    }
+}
+
+<div class="row main-login mt-125">
+    <div class="container form-container">
+        <div class="col-lg-12 lr-tab-area">
+
+
+            @if (Model.CheckoutAsGuest)
+            {
+                <div class="col-lg-4 col-xs-12 col-sm-4 col-md-4 lr-tab lr-active hidden-xs">Üye Girişi</div>
+                <div class="col-lg-4 col-xs-12 col-sm-4 col-md-4  lr-tab"><a href="@registerUrl">@T("Account.Register")</a></div>
+                <div class="col-lg-4 col-xs-12 col-sm-4 col-md-4  lr-tab">
+                    <a href="@Url.RouteUrl("Checkout")">@T("Account.Login.CheckoutAsGuest")</a>
+                </div>
+            }
+            else
+            {
+                <div class="col-lg-6 col-xs-12 col-sm-6 col-md-6 lr-tab lr-active hidden-xs">Üye Girişi</div>
+                <div class="col-lg-6 col-xs-12 col-sm-6 col-md-6  lr-tab"><a href="@registerUrl">@T("Account.Register")</a></div>
+            }
+        </div>
+    </div>
+
+    <div class="container form-container">
+
+        <div class="col-lg-12 lr-form-area">
+            <div class="col-lg-12 m-seperator text-uppercase">Hesabınıza Giriş Yapınız</div>
+            @Html.Partial("_ExternalAuthentication.AssociateMessage")
+            @Html.Partial("_ExternalAuthentication.Errors")
+            <div class="col-lg-12 lr-form">
+                @using (Html.BeginForm())
+                {
+                    var validationSummary = Html.ValidationSummary(true, T("Account.Login.Unsuccessful").Text);
+                    <div class="form-group">
+                        <label class="label-head capitalize text-label" for="Email">Email</label>
+                        @*<input class="form-control text-input" id="Email" name="Email" type="text" value="">*@
+                        @Html.TextBoxFor(m => m.Email, new {@class = "form-control text-input", autofocus = "autofocus"})
+
+                    </div>
+                    <div class="form-group">
+                        <label class="label-head capitalize text-label" for="Password">Şifre</label>
+                        @*<input class="form-control text-input" id="Password" name="Password" type="password">*@
+                        @Html.PasswordFor(m => m.Password, new {@class = "form-control text-input"})
+
+                    </div>
+                    <div class="form-group login-remember-me">
+                        @*<input class="remember-me-input labelauty" id="RememberMe" name="RememberMe" type="checkbox" value="true"/>*@
+                        @Html.CheckBoxFor(m => m.RememberMe)
+
+                        <label class="label-head capitalize text-label" for="RememberMe">Beni Hatırla</label>
+                        @*<a href="/passwordrecovery" class="pull-right forgot-password-link">Þifremi Hatýrlat</a>*@
+                        @Html.RouteLink(T("Account.Login.ForgotPassword").Text, "PasswordRecovery")
+
+                    </div>
+                    <div class="col-lg-12 col-xs-12 prl-0">
+                        @*<a href="javascript:void(0);" class="btn login-button">GÝRÝÞ YAP</a>*@
+                        <input class="btn login-button" type="submit" value="@T("Account.Login.LoginButton")"/>
+
+                    </div>
+                    <div class="col-lg-12 col-xs-12 prl-0">
+                        @Html.Action("ExternalMethods", "ExternalAuthentication")
+                    </div>
+                }            </div>
+            @*@if (Model.CheckoutAsGuest)
+            {
+                <div class="col-lg-12 col-xs-12 prl-0">
+                    <input type="button" class="btn login-button" onclick="location.href='@Url.RouteUrl("Checkout")'" value="@T("Account.Login.CheckoutAsGuest")" style="margin-top: 10px"/>
+
+                </div>
+            }*@
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+﻿@model CheckoutPaymentInfoModel
+@using Nop.Web.Models.Checkout;
+@{
+    //title
+    Html.AddTitleParts(T("PageTitle.Checkout").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-checkout-page");
+    Html.AppendPageCssClassParts("html-payment-info-page");
+}
+<div class="row main-cart mt-125">
+    @Html.Action("CheckoutProgress", "Checkout", new { step = CheckoutProgressStep.Payment })
+    @using (Html.BeginRouteForm("CheckoutPaymentInfo", FormMethod.Post))
+    {
+        var validationSummary = Html.ValidationSummary(false);
+        if (!MvcHtmlString.IsNullOrEmpty(validationSummary))
+        {
+            <div class="message-error">@validationSummary</div>
+        }
+        <div class="container cart-main-container">
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 prl-0 address-area">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cart-area-left">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 prl-0 payment-tab-area">
+
+                        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 payment-tab payment-active" data-payment="card">Kredi Kartı</div>
+                        <div class="col-lg-6  col-md-6 col-sm-6 col-xs-6 payment-tab" data-payment="havale">Havale/Eft</div>
+
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cart-payment-area-box-left">
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cart-order-title havale-title">Banka Havale Bilgileri</div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 havale-info-area">
+                          @Html.Action(Model.PaymentInfoActionName, Model.PaymentInfoControllerName, Model.PaymentInfoRouteValues)
+
+                        </div>
+
+                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 cart-order-title card-title">Kredi karı</div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 card-info-area">
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 prl-0">
+                                <div class="form-group">
+                                    <label class="label-head capitalize text-label" for="Email">Kredi kartı İle Alışveriş Şuanda Aktif Değil</label>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cart-area-right ">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cart-area-box-right">
+                        <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 continue-area">
+
+                            <div id="terms-of-service-warning-box" title="@T("Checkout.TermsOfService")" style="display: none;">
+                                <p>@T("Checkout.TermsOfService.PleaseAccept")</p>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 prl-0  register-links">
+                                <div class="form-group  clearfix">
+                                    @*<input class="check-box labelauty" id="Newsletter" name="Newsletter" type="checkbox" value="true">*@
+                                    <label for="termsofservice">
+                                        <input id="termsofservice" type="checkbox" name="termsofservice">
+                                        @T("Checkout.TermsOfService.IAccept")
+                                    </label>
+                                    <a class="read" id="read-terms">@T("Checkout.TermsOfService.Read")</a>
+
+                                    <script>
+                                        $(document).ready(function() {
+                                            $('#read-terms').on('click', function(e) {
+                                                e.preventDefault();
+                                                displayPopupContentFromUrl('@Url.RouteUrl("TopicPopup", new {SystemName = "conditionsofuse"})', '@T("Checkout.TermsOfService")');
+                                            });
+                                        });
+                                    </script>
+                                </div>
+
+                            </div>
+                            <input type="submit" id="checkout" name="nextstep" value="@T("Checkout.NextButton")" class="btn login-button"/>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#checkout').click(function () {
+            //terms of service
+            var termOfServiceOk = true;
+            if ($('#termsofservice').length > 0) {
+                //terms of service element exists
+                if (!$('#termsofservice').is(':checked')) {
+                    $("#terms-of-service-warning-box").dialog();
+                    termOfServiceOk = false;
+                } else {
+                    termOfServiceOk = true;
+                }
+            }
+            return termOfServiceOk;
+        });
+    });
+</script>

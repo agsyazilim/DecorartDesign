@@ -1,0 +1,37 @@
+﻿@*@model ProductDetailsModel
+@using Nop.Web.Models.Catalog;
+
+@if (!String.IsNullOrWhiteSpace(Model.PageShareCode))
+{
+    @*<div class="product-share-button">
+        @Html.Raw(Model.PageShareCode)
+    </div>
+    <button type="button" class="col-sm-3 col-xs-6" data-toggle="modal" data-target="#shareModal">
+        <span class="glyphicon glyphicon-share black" aria-hidden="true"></span> @T("admin.configuration.settings.catalog.blocktitle.share")
+    </button>
+    <div class="modal fade" id="shareModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-share black" aria-hidden="true"></span> @T("admin.configuration.settings.catalog.blocktitle.share")</h4>
+                </div>
+                <div class="modal-body product-share-button">
+                    @Html.Raw(Model.PageShareCode)
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@T("common.close")</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+}*@
+@model ProductDetailsModel
+@using Nop.Web.Models.Catalog;
+
+@if (!String.IsNullOrWhiteSpace(Model.PageShareCode))
+{
+    <div class="product-share-button">
+        @Html.Raw(Model.PageShareCode)
+    </div>
+}

@@ -1,0 +1,77 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Orders;
+@if (Model.UpdatedShoppingCartItemId > 0)
+{
+    @Html.HiddenFor(x => x.UpdatedShoppingCartItemId)
+}
+@if (!Model.DisableBuyButton || Model.CustomerEntersPrice)
+{
+    <div class="urun-detay__sepete-ekle col-xs-12">
+        @if (Model.CustomerEntersPrice)
+        {
+            <div class="input-with-icon">
+                <span class="input-icon">
+                    <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-price.png" class="img-responsive">
+                </span>
+                @Html.TextBox("CustomerEnteredPrice", Convert.ToInt32(Math.Ceiling(Model.CustomerEnteredPrice)), new { @class = "form-control", placeholder=T("products.enterproductprice").Text })
+                <p class=" help-block text-danger">
+                    @Model.CustomerEnteredPriceRange
+                </p>
+            </div>
+        }
+        @if (!String.IsNullOrEmpty(Model.MinimumQuantityNotification))
+        {
+            <p class="text-danger">@Model.MinimumQuantityNotification</p>
+        }
+        @if (!Model.DisableBuyButton)
+        {
+            <div class="adet-input col-xs-5">
+                @if (Model.AllowedQuantities.Count > 0)
+                {
+                    @Html.DropDownListFor(model => model.EnteredQuantity, Model.AllowedQuantities, new { @class = "qty-dropdown" })
+                }
+                else
+                {
+                    <button type="button" id="eksi">-</button>
+                    @Html.TextBoxFor(model => model.EnteredQuantity, new { @class = "qty-input", id="adet" })
+                    <button type="button" id="arti">+</button>
+                    //when a customer clicks 'Enter' button we submit the "add to cart" button (if visible)
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $("#@Html.FieldIdFor(model => model.EnteredQuantity)").keydown(function (event) {
+                                if (event.keyCode == 13) {
+                                    $("#add-to-cart-button-@Model.ProductId").click();
+                                    return false;
+                                }
+                            });
+                        });
+                    </script>
+                }
+                </div>
+                    var addToCartText = "";
+                    if (Model.UpdatedShoppingCartItemId > 0 && Model.UpdateShoppingCartItemType.HasValue && Model.UpdateShoppingCartItemType.Value == ShoppingCartType.ShoppingCart)
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart.Update").Text;
+                    }
+                    else
+                    {
+                        addToCartText = T("ShoppingCart.AddToCart").Text;
+                        if (Model.IsRental)
+                        {
+                            addToCartText = T("ShoppingCart.Rent").Text;
+                        }
+                        if (Model.AvailableForPreOrder)
+                        {
+                            addToCartText = T("ShoppingCart.PreOrder").Text;
+                        }
+                    }
+                    <button class="sepete-ekle col-xs-6 col-xs-offset-1 add-to-cart-button" id="add-to-cart-button-@Model.ProductId" data-productid="@Model.ProductId"
+                            onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })', '#product-details-form');return false;">
+                        <img src="~/Themes/ags2017/Content/img/sepet-white.png"> @addToCartText
+                    </button>
+               
+        }
+        @Html.Widget("productdetails_add_info", Model.ProductId)
+    </div>
+}

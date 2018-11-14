@@ -1,0 +1,96 @@
+﻿@model MiniShoppingCartModel
+@using Nop.Web.Models.ShoppingCart;
+@*<div id="flyout-cart" class="col-sm-2 col-sm-offset-1 col-xs-4 header__cart flyout-cart">
+    <a href="@Url.RouteUrl("ShoppingCart")"><img src="~/Themes/ags2017/Content/img/basket.png" class="img-responsive sepet__ikon" /></a>
+    <a href="@Url.RouteUrl("ShoppingCart")" class="sepet-yazi">Sepet</a>
+    <span>
+        <span class="cart__number">@Model.TotalProducts</span>
+    </span>
+    <div class="items cart-hover-detay hidden-xs mini-shopping-cart">
+        @if (Model.TotalProducts > 0)
+        {
+            foreach (MiniShoppingCartModel.ShoppingCartItemModel i in Model.Items)
+            {
+                <div class="item cart-hover-urun">
+                    <div class="cart-hover-urun-detay">
+                        <a href="@Url.RouteUrl("Product", new { SeName = i.ProductSeName })" title="@i.Picture.Title">
+                        <img src="@i.Picture.ImageUrl" alt="@i.Picture.AlternateText" title="@i.Picture.Title" />
+                        </a>
+                        <ul>
+                            <li class="urun-adi"><a href="@Url.RouteUrl("Product", new { SeName = i.ProductSeName })">@i.ProductName</a></li>
+                            <li>@i.Quantity<text>/</text>@i.UnitPrice</li>
+                            @if (!String.IsNullOrEmpty(i.AttributeInfo))
+                            {
+                                <li>
+                                    @Html.Raw(i.AttributeInfo)
+                                </li>
+                            }
+                        </ul>
+
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-denger">@T("ShoppingCart.Mini.NoItems")</p>
+        }
+        <div class="cart-hover-toplam">
+            <span class="toplam">@T("ShoppingCart.Totals.SubTotal"): </span> @Model.SubTotal
+        </div>
+        @if (Model.DisplayShoppingCartButton)
+        {
+            <input type="button" class="btn btn-koyugri" value="@T("ShoppingCart.Mini.ViewCart")" onclick="setLocation('@(Url.RouteUrl("ShoppingCart"))')" />
+
+        }
+    </div>
+</div>*@
+<div class="header__cart"  id="flyout-cart">
+    <span class="sepet__ikon-container">
+        <a href="@Url.RouteUrl("ShoppingCart")">
+            <img src="/Themes/ags2017/Content/Index/img/basket.png" class="img-responsive sepet__ikon">
+        </a>
+        <a href="@Url.RouteUrl("ShoppingCart")"><span class="sepet-yazi visible-xs">SEPET</span></a>
+</span>
+    <span>
+        <span class="cart__number">@Model.TotalProducts</span>
+    </span>
+    <div class="cart-hover-detay hidden-xs" style="display: none;">
+        <div class="cart-hover-urun">
+            <div class="cart-hover-urun-detay">
+                @if (Model.TotalProducts > 0)
+                {
+                    foreach (MiniShoppingCartModel.ShoppingCartItemModel i in Model.Items)
+                    {
+                        <a href="@Url.RouteUrl("Product", new { SeName = i.ProductSeName })" title="@i.Picture.Title">
+                            <img src="@i.Picture.ImageUrl" alt="@i.Picture.AlternateText" title="@i.Picture.Title" class="img-responsive"/>
+                        </a>
+                        <ul>
+                            <li class="urun-adi"><a href="@Url.RouteUrl("Product", new { SeName = i.ProductSeName })">@i.ProductName</a></li>
+                            <li>@i.Quantity<text>/</text>@i.UnitPrice</li>
+                            @if (!String.IsNullOrEmpty(i.AttributeInfo))
+                            {
+                                <li>
+                                    @Html.Raw(i.AttributeInfo)
+                                </li>
+                            }
+                        </ul>
+                    }
+                }
+                else
+                {
+                    <p class="text-denger">@T("ShoppingCart.Mini.NoItems")</p>
+                }
+
+            </div>
+        </div>
+        <div class="cart-hover-toplam">
+            <span class="toplam">@T("ShoppingCart.Totals.SubTotal"): </span> @Model.SubTotal
+        </div>
+        @if (Model.DisplayShoppingCartButton)
+        {
+            <input type="button" @*class="btn btn-koyugri"*@ value="@T("ShoppingCart.Mini.ViewCart")" onclick="setLocation('@(Url.RouteUrl("ShoppingCart"))')" id="buttonId"/>
+
+        }
+    </div>
+</div>

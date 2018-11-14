@@ -1,0 +1,176 @@
+﻿  @model CheckoutPaymentMethodModel
+@using Nop.Web.Models.Checkout;
+@{
+    //title
+    Html.AddTitleParts(T("PageTitle.Checkout").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-checkout-page");
+    Html.AppendPageCssClassParts("html-payment-method-page");
+    string errorMessage = ViewBag.ErrorMessage;
+}
+<div class="row main-cart mt-125">
+    @Html.Action("CheckoutProgress", "Checkout", new { step = CheckoutProgressStep.Payment })
+    @using (Html.BeginRouteForm("CheckoutPaymentMethod", FormMethod.Post))
+    {
+        var validationSummary = Html.ValidationSummary(false);
+        if (!MvcHtmlString.IsNullOrEmpty(validationSummary))
+        {
+            <div class="message-error">@validationSummary</div>
+        }
+        <div class="container cart-main-container">
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 prl-0 address-area">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 cart-area-left">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 prl-0 payment-tab-area">
+                        @if (Model.PaymentMethods.Count > 0)
+                        {
+                            for (int i = 0; i < Model.PaymentMethods.Count; i++)
+                            {
+                                var paymentMethod = Model.PaymentMethods[i];
+                                var paymentMethodName = paymentMethod.Name;
+                                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 payment-tab @(i == 0 ? "payment-active" : "")" id="tab_@i" data-payment="payment_@i" onclick="selectPaymentMethod(@i)">@paymentMethodName</div>
+                                @*<div class="@(i == 0 ? "payment-active" : "") col-lg-6 col-sm-6 col-md-6 col-xs-6 payment-tab" role="presentation">
+                                        <a data-toggle="tab" role="tab" aria-controls="payment_@i" href="#payment_@i" aria-expanded="@(i == 0 ? "true" : "false")" onclick="selectPaymentMethod(@i)">@paymentMethodName</a>
+                                    </div>*@
+                            }
+                        }
+
+
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cart-payment-area-box-left">
+                        @if (Model.PaymentMethods.Count > 0)
+                        {
+                            for (int i = 0; i < Model.PaymentMethods.Count; i++)
+                            {
+                                var paymentMethod = Model.PaymentMethods[i];
+                                var paymentMethodName = paymentMethod.Name;
+
+                                
+                                if (!String.IsNullOrEmpty(paymentMethod.Fee))
+                                {
+                                    paymentMethodName = T("Checkout.SelectPaymentMethod.MethodAndFee", paymentMethodName, paymentMethod.Fee).Text;
+                                }
+                                if (i == 1)
+                                {
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cart-order-title havale-title">@paymentMethodName</div>
+
+                                    <div style="font-size: 13px;" id="payment_@i" class="tab-pane @(i == 0 ? "active" : "")" role="tabpanel">
+                                        @*<span>Tutar <font class="bold"></font> TL</span>*@
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 havale-info-area">
+                                            @Html.Action(paymentMethod.CheckoutPaymentInfoModel.PaymentInfoActionName, paymentMethod.CheckoutPaymentInfoModel.PaymentInfoControllerName, paymentMethod.CheckoutPaymentInfoModel.PaymentInfoRouteValues)
+                                            <label class="block" style="display: none">
+                                                <input id="paymentmethod_@(i)" type="radio" name="paymentmethod" value="@(paymentMethod.PaymentMethodSystemName)" checked="@paymentMethod.Selected" />
+                                                <label for="paymentmethod_@(i)">@paymentMethodName</label>
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 cart-order-title card-title">@paymentMethodName</div>
+
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 card-info-area">
+                                        @Html.Action(paymentMethod.CheckoutPaymentInfoModel.PaymentInfoActionName, paymentMethod.CheckoutPaymentInfoModel.PaymentInfoControllerName, paymentMethod.CheckoutPaymentInfoModel.PaymentInfoRouteValues)
+                                        <label class="block" style="display: none">
+                                            <input id="paymentmethod_@(i)" type="radio" name="paymentmethod" value="@(paymentMethod.PaymentMethodSystemName)" checked="@paymentMethod.Selected" />
+                                            <label for="paymentmethod_@(i)">@paymentMethodName</label>
+                                        </label>
+
+                                    </div>
+                                }
+                            }
+                        }
+                        @if (!string.IsNullOrWhiteSpace(errorMessage))
+                        {
+                            <script>
+                                $(".payment-tab").removeClass("payment-active");
+                                $("#tab_1").addClass("payment-active");
+                                $(".card-info-area").css("display", "none");
+                                $(".havale-info-area").css("display", "block");
+                                $(".havale-title").css("display", "block");
+                                $(".card-title").css("display", "none");
+                                $(".card-info-taksit-area").css("display", "none");
+                            </script>
+                            <p style="color:red">@errorMessage</p>
+                        }
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 cart-area-right ">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cart-area-box-right">
+                        <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 continue-area">
+
+                            <div id="terms-of-service-warning-box" title="@T("Checkout.TermsOfService")" style="display: none;">
+                                <p>@T("Checkout.TermsOfService.PleaseAccept")</p>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 prl-0  register-links">
+                                <div class="form-group  clearfix">
+                                    @*<input class="check-box labelauty" id="Newsletter" name="Newsletter" type="checkbox" value="true">*@
+                                    <label for="termsofservice">
+                                        <input id="termsofservice" type="checkbox" name="termsofservice">
+                                        @T("Checkout.TermsOfService.IAccept")
+                                    </label>
+                                    <a class="read" id="read-terms">@T("Checkout.TermsOfService.Read")</a>
+
+                                    <script>
+                                        $(document).ready(function() {
+                                            $('#read-terms').on('click', function(e) {
+                                                e.preventDefault();
+                                                displayPopupContentFromUrl('@Url.RouteUrl("TopicPopup", new {SystemName = "conditionsofuse"})', '@T("Checkout.TermsOfService")');
+                                            });
+                                        });
+                                    </script>
+                                </div>
+
+                            </div>
+                            <input type="submit" id="checkout" name="nextstep" value="@T("Checkout.NextButton")" class="btn login-button" />
+
+                        </div>
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    function selectPaymentMethod(i) {
+        $("#paymentmethod_" + i).prop("checked", true);
+    }
+    //$("form").submit(function() {
+    //    if ($('#paymentmethod_1').is(':checked')) {
+    //        if ($("#CardholderName").val().length == 0 ||
+    //            $("#CardNumber").val().length == 0 ||
+    //            $("#CardCode").val().length == 0) {
+    //            alert("Please fill the all fields");
+    //            return false;
+    //        }
+    //    }
+
+    //});
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#checkout').click(function () {
+            //terms of service
+            var termOfServiceOk = true;
+            if ($('#termsofservice').length > 0) {
+                //terms of service element exists
+                if (!$('#termsofservice').is(':checked')) {
+                    $("#terms-of-service-warning-box").dialog();
+                    termOfServiceOk = false;
+                } else {
+                    termOfServiceOk = true;
+                }
+            }
+            return termOfServiceOk;
+        });
+    });
+</script>

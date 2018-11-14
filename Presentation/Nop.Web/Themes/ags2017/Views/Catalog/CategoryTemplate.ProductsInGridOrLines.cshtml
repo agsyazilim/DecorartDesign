@@ -1,0 +1,195 @@
+﻿@model CategoryModel
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+    //title
+    Html.AddTitleParts(!String.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    Html.AddMetaDescriptionParts(Model.MetaDescription);
+    Html.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    //Html.AppendPageCssClassParts("html-category-page");
+
+    var canonicalUrlsEnabled = EngineContext.Current.Resolve<SeoSettings>().CanonicalUrlsEnabled;
+    if (canonicalUrlsEnabled)
+    {
+        var categoryUrl = Url.RouteUrl("Category", new { SeName = Model.SeName }, this.Request.Url.Scheme);
+        Html.AddCanonicalUrlParts(categoryUrl);
+    }
+    var min = "";
+    var max = "";
+    if (Model.PagingFilteringContext.PriceRangeFilter.Enabled)
+    {
+
+        min = Model.PagingFilteringContext.PriceRangeFilter.Items.OrderBy(x => x.From).First().From.Replace(",00 TL", "");
+        max = Model.PagingFilteringContext.PriceRangeFilter.Items.OrderBy(x => x.To).Last().To.Replace(",00 TL", "");
+    }
+    var breadcrumbDelimiter = EngineContext.Current.Resolve<CommonSettings>().BreadcrumbDelimiter;
+}
+@using Nop.Core.Domain.Common;
+@using Nop.Core.Domain.Seo;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+
+@*filtering*@
+@if (Model.PagingFilteringContext.PriceRangeFilter.Enabled)
+            {
+    @section FilterPrice{
+        @Html.Partial("_FilterPriceBox", Model.PagingFilteringContext.PriceRangeFilter, new ViewDataDictionary())
+<br/>
+    }
+}
+    @*filtering*@
+    @if (Model.PagingFilteringContext.SpecificationFilter.Enabled)
+            {
+        @section FilterSpecs
+                {
+            @Html.Partial("_FilterSpecsBox", Model.PagingFilteringContext.SpecificationFilter, new ViewDataDictionary())
+            <br/>
+        }
+    }
+
+@*category breadcrumb*@
+@section Breadcrumb
+{
+    @if (Model.DisplayCategoryBreadcrumb)
+    {<div class="container">
+        <ol class="breadcrumb">
+            <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+                <a href="@Url.RouteUrl("HomePage")" title="@T("Categories.Breadcrumb.Top")">@T("Categories.Breadcrumb.Top")</a>
+            </li>
+            @foreach (var cat in Model.CategoryBreadcrumb)
+            {
+                var isLastCategory = cat.Id == Model.Id;
+
+                if (isLastCategory)
+                {
+                    <li class="active">@cat.Name</li>
+                }
+                else
+                {
+                    <li><a href="@Url.RouteUrl("Category", new { SeName = cat.SeName })" title="@cat.Name">@cat.Name</a></li>
+                }
+            }
+        </ol>
+    </div>
+        @Html.Widget("categorydetails_after_breadcrumb", Model.Id)
+    }
+}
+<div class="urun-list grid grid-4 col-xs-12 col-sm-9">
+        @if (Model.PictureModel != null && !string.IsNullOrEmpty(Model.PictureModel.ImageUrl) && !Model.PictureModel.ImageUrl.Contains("default-image.png"))
+        {
+            <div class="urun-liste-banner">
+                <img src="@Model.PictureModel.ImageUrl" alt="@Model.PictureModel.AlternateText" title="@Model.PictureModel.Title"/>
+            </div>
+        }
+    @Html.Widget("categorydetails_top", Model.Id)
+        @*description*@
+        @Html.Widget("categorydetails_before_subcategories", Model.Id)
+        @*subcategories*@
+        @*@if (Model.SubCategories.Count > 0)
+        {
+            
+                    foreach (var item in Model.SubCategories)
+                    {
+                        <div class="urun-list__urun col-xs-12 col-sm-4">
+                            <div class="urun-border">
+                                <a href="@Url.RouteUrl("Category", new { SeName = item.SeName })" class="urun-liste-resim" title="@item.PictureModel.Title">
+                                    <img src="@item.PictureModel.ImageUrl" alt="@item.PictureModel.AlternateText" title="@item.PictureModel.Title">
+                                </a>
+                                <div class="urun-list__urun-yazi">
+                                    <div class="urun-list__urun-adi">
+                                        <a href="@Url.RouteUrl("Category", new { SeName = item.SeName })">
+                                        @item.Name
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+        }*@
+        @Html.Widget("categorydetails_before_featured_products", Model.Id)
+        @*featured products*@
+        @if (Model.FeaturedProducts.Count > 0)
+        {
+                <div class="row">
+                    <div class="content__urun-slider col-xs-12 col-sm-11">
+                        <button type="button" class="slider-left-arrow"></button>
+                        <button type="button" class="slider-right-arrow"></button>
+                        <div class="urun-slider__head">
+                            <strong>@T("Products.FeaturedProducts")</strong>
+                        </div>
+                        <div class="urun-slider__urunler">
+                            @foreach (var item in Model.FeaturedProducts)
+                            {
+                                @Html.Partial("_ProductBox", item)
+                            }
+                        </div>
+                    </div>
+                </div>
+        }
+        @Html.Widget("categorydetails_after_featured_products", Model.Id)
+        @if (Model.Products.Count > 0)
+        {
+            @Html.Partial("_CatalogSelectors", Model.PagingFilteringContext, new ViewDataDictionary())
+            <br />
+        }
+        @Html.Widget("categorydetails_before_filters", Model.Id)
+
+           
+        @Html.Widget("categorydetails_before_product_list", Model.Id)
+
+        @if (Model.Products.Count > 0)
+        {
+                    foreach (var product in Model.Products)
+                    {
+                            @Html.Partial("_ProductBox", product)
+                    }
+
+        }
+        @{
+            var pager = Html.Pager(Model.PagingFilteringContext).QueryParam("pagenumber");
+        }
+        @if (!pager.IsEmpty())
+        {
+            <div class="urun-list grid col-xs-12 col-sm-12">
+
+            <div class="pager">
+                @pager
+            </div>
+            </div>
+
+
+                }
+                @Html.Widget("categorydetails_bottom", Model.Id)
+            </div>
+<script>
+    $(function() {
+        if ($('#price-slider').is(':visible')) {
+            noUiSlider.create(document.getElementById('price-slider'), {
+                start: [@min, @max],
+                connect: true,
+                range: {
+                    'min': @min,
+                    'max': @max
+                },
+                format: {
+                    to: function (value) {
+                        return Math.round(value);
+                    },
+                    from: function (value) {
+                        return value.replace(',-', '');
+                    }
+                }
+            });
+            document.getElementById('price-slider').noUiSlider.on('update', function (values, handle) {
+                $('#price-slider-range #min').html(values[0]);
+                $('#price-slider-range #max').html(values[1]);
+            });
+            document.getElementById('price-slider').noUiSlider.on('end', function (values) {
+                //bulunduğun sayfaya query parameter gir ?pricerange=#min-#max
+                $(location).attr('href', ('?pricerange=' + values[0] + '_' + values[1]));
+            });
+        }
+    });
+
+</script>

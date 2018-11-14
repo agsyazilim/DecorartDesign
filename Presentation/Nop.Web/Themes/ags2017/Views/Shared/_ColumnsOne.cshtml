@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/_Root.cshtml";
+}
+<div>
+@if (IsSectionDefined("Breadcrumb"))
+{
+    @section Breadcrumb {
+        @RenderSection("Breadcrumb")
+    }
+}
+        
+        @Html.Widget("main_column_before")
+        @RenderBody()
+        @Html.Widget("main_column_after")
+</div>
+
+@section subscripts{
+    @RenderSection("subscripts",false)
+    }

@@ -1,0 +1,72 @@
+﻿@model SearchBoxModel
+@using Nop.Web.Models.Catalog;
+<div class="col-sm-4 col-xs-1 arama-container">
+    <a href="#arama" id="aramaGoster">
+        <img src="/Themes/ags2017/Content/img/search.png" class="img-icon-big"/>
+    </a>
+    <div class="arama-bolumu" style="display: none">
+        @using (Html.BeginRouteForm("ProductSearch", FormMethod.Get, new { id = "small-search-box-form", @class = "search" }))
+        {
+            <input type="text" class="arama-input" id="small-searchterms" autocomplete="off" name="q" placeholder="@T("Search.SearchBox.Tooltip")" />
+            @Html.Widget("searchbox_before_search_button")
+            <a href="#arama" id="aramaGizle"><span>&times;</span></a>
+            <input type="submit" class="button-1 search-box-button search__button" value="" style="display: none" id="serachMe"/>
+       
+
+            @Html.Widget("searchbox")
+        }
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#small-searchterms").keydown(function (event) {
+                    if (event.keyCode == 13) {
+                        $("#serachMe").click();
+                        return false;
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>
+
+
+    @if (Model.SearchTermMinimumLength > 0)
+    {
+    <script type="text/javascript">
+            $("#small-search-box-form").submit(function(event) {
+                if ($("#small-searchterms").val() == "") {
+                    alert('@Html.Raw(HttpUtility.JavaScriptStringEncode(T("Search.EnterSearchTerms").Text))');
+                    $("#small-searchterms").focus();
+                    event.preventDefault();
+                }
+            });
+    </script>
+    }
+    @if (Model.AutoCompleteEnabled)
+    {
+    <text>
+        <script type="text/javascript">
+                $(document).ready(function() {
+                    $('#small-searchterms').autocomplete({
+                            delay: 500,
+                            minLength: @(Model.SearchTermMinimumLength.ToString()),
+                            source: '@(Url.RouteUrl("ProductSearchAutoComplete"))',
+                            appendTo: '.header__search',
+                            select: function(event, ui) {
+                                $("#small-searchterms").val(ui.item.label);
+                                setLocation(ui.item.producturl);
+                                return false;
+                            }
+                        })
+                        .data("ui-autocomplete")._renderItem = function(ul, item) {
+                            var t = item.label;
+                            //html encode
+                            t = htmlEncode(t);
+                            return $("<li></li>")
+                                .data("item.autocomplete", item)
+                                .append("<a>@(Model.ShowProductImagesInSearchAutoComplete ? Html.Raw("<img src='\" + item.productpictureurl + \"'>") : null)<span>" + t + "</span></a>")
+                                .appendTo(ul);
+                        };
+                });
+        </script>
+    </text>
+    }

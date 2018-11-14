@@ -1,0 +1,17 @@
+﻿
+    @Html.Widget("header")
+    
+     @Html.Partial("PageHeader")    
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                @Html.Action("SearchBox", "Catalog")
+                @Html.Action("Logo", "Common")
+                <div class="col-sm-4 col-xs-2 header__logins">
+                    @Html.Action("HeaderLinks", "Common")
+                    @Html.Action("FlyoutShoppingCart", "ShoppingCart")
+                </div>
+            </div>
+        </div>
+    </header>
+

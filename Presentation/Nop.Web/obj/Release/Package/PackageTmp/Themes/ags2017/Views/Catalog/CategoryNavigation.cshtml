@@ -1,0 +1,112 @@
+﻿@model CategoryNavigationModel
+@using Nop.Web.Models.Catalog;
+
+@functions{
+    public bool BreadCrumbContainsCurrentCategoryId(CategorySimpleModel category)
+    {
+        if (Model.CurrentCategoryId == 0)
+            return false;
+
+        if (category.Id == Model.CurrentCategoryId)
+            return true;
+
+        foreach (var subCategory in category.SubCategories)
+        {
+            if (BreadCrumbContainsCurrentCategoryId(subCategory))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+@helper RenderCategoryLine(CategorySimpleModel category)
+{
+bool active = category.Id == Model.CurrentCategoryId || category.SubCategories.Count(BreadCrumbContainsCurrentCategoryId) > 0;
+bool last = category.Id == Model.CurrentCategoryId;
+string liClass = active ? "active" : "";
+bool HasSub = false;
+
+if(category.SubCategories != null && category.SubCategories.Any(p=>p.IncludeInTopMenu))
+{
+
+    HasSub = true;
+}
+else
+{
+    liClass = liClass + " noCat";
+}
+
+    <li class="@liClass">
+        @if (HasSub)
+        {
+            <a class="subKategoriAc" data-target="#subcat_@category.Id" id="expand_@category.Id">
+                @*<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>*@
+            </a>
+        }
+        <a href="@Url.RouteUrl("Category", new { SeName = category.SeName })">@category.Name
+            @if (category.NumberOfProducts.HasValue)
+            {
+                <text> </text>@T("Categories.TotalProducts", category.NumberOfProducts.Value)
+            }
+        </a>
+        @{
+            string collapsed = "";
+            if (category.Id == Model.CurrentCategoryId ||
+                category.SubCategories.Count(BreadCrumbContainsCurrentCategoryId) > 0)
+            {
+                collapsed = "class=\"collapse in\"";
+            }
+            if (category.SubCategories.Count > 0)
+            {
+                <ul @collapsed id="subcat_@category.Id">
+                    @foreach (var subCategory in category.SubCategories)
+                    {
+                        @RenderCategoryLine(subCategory)
+                    }
+                </ul>
+                }
+
+            }
+    </li>
+}
+@if (Model.Categories.Count > 0)
+{
+    <div>
+        <div class="yan-kategori__baslik">
+            @T("Categories")
+        </div>
+        <ul class="yan-kategori__list">
+            @foreach (var category in Model.Categories)
+                {
+                @RenderCategoryLine(category)
+            }
+        </ul>
+    </div>
+    @*<div class="block block-category-navigation">
+        <div class="title">
+            <strong>@T("Categories")</strong>
+        </div>
+        <div class="listbox">
+            <ul class="list">
+                @foreach (var category in Model.Categories)
+                {
+                    @RenderCategoryLine(category)
+                }
+            </ul>
+        </div>
+    </div>*@
+}
+
+@section subscripts
+{
+    @RenderSection("subscripts", false)
+}
+
+<script>
+    $(function() {
+        $("#expand_" + @Model.CurrentCategoryId).click();
+
+    });
+</script>

@@ -1,0 +1,85 @@
+﻿@model ProductDetailsModel.ProductPriceModel
+@using Nop.Core
+@using Nop.Core.Domain.Tax
+@using Nop.Core.Infrastructure
+@using Nop.Web.Models.Catalog;
+<div class="ol-xs-12 urun-detay__urun-fiyat">
+    @if (!Model.CustomerEntersPrice)
+    {
+        decimal deger = 0;
+        if (!String.IsNullOrEmpty(Model.OldPrice))
+        {
+            decimal oldPrice = 0;
+
+            if (decimal.TryParse(Model.OldPrice.Replace(Model.CurrencyCode, ""), out oldPrice))
+            {
+                deger = Math.Round((100 - (Model.PriceValue / oldPrice) * 100), 0);
+            }
+        }
+        if (deger > 0)
+        {
+            <span class="urun-indirim-yuzde">
+                %@deger
+            </span>
+        }
+
+
+        <div class="fiyatlar" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            @if (Model.CallForPrice)
+            {
+                @*call for price*@
+                <span class="urun-fiyat">
+                    @T("Products.CallForPrice")
+                </span>
+            }
+            else
+            {
+                if (Model.IsRental)
+                {
+                    <span class="urun-fiyat">
+                        @T("Products.Price.RentalPrice") : @Model.RentalPrice
+                    </span>
+                }
+                if (!String.IsNullOrWhiteSpace(Model.OldPrice))
+                {
+                    @*old price*@
+                    <span class="urun-eski-fiyat">
+                        @Model.OldPrice
+                    </span>
+                }
+                <span class="urun-fiyat" itemprop="price" content="@Model.PriceValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                    @Html.Raw(Model.Price)
+                </span>
+                @*if (!String.IsNullOrWhiteSpace(Model.PriceWithDiscount))
+                    {
+                    @*discounted price
+                        <div class="urun-fiyat">
+                            <label>@T("Products.Price.WithDiscount"):</label>
+                            <span itemprop="price" content="@Model.PriceValue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" class="price-value-@(Model.ProductId)">
+                                @Html.Raw(Model.PriceWithDiscount)
+                            </span>
+                        </div>
+                    }*@
+            if (!String.IsNullOrEmpty(Model.BasePricePAngV))
+            {
+                <div class="urun-fiyat">
+                    @Model.BasePricePAngV
+                </div>
+            }
+            if (Model.DisplayTaxShippingInfo)
+            {
+                var inclTax = EngineContext.Current.Resolve<IWorkContext>().TaxDisplayType == TaxDisplayType.IncludingTax;
+                //tax info is already included in the price (incl/excl tax). that's why we display only shipping info here
+                //of course, you can modify appropriate locales to include VAT info there
+                <span>
+                    @T(inclTax ? "Products.Price.TaxShipping.InclTax" : "Products.Price.TaxShipping.ExclTax", Url.RouteUrl("Topic", new { SeName = Html.GetTopicSeName("shippinginfo") }))
+                </span>
+                }
+                if (!String.IsNullOrEmpty(Model.CurrencyCode))
+                {
+                    <meta itemprop="priceCurrency" content="@Model.CurrencyCode" />
+                }
+            }
+        </div>
+    }
+</div>

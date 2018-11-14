@@ -1,0 +1,44 @@
+﻿@model Nop.Web.Models.Common.SocialModel
+
+@*<div class="col-xs-12 center-block col-sm-3">
+    <div class="footer__sosyal-medya">
+        <h5>Bizi Takip Edin</h5>
+        <span class="social-icons">
+            <a href="@Model.FacebookLink"><img src="~/Themes/ags2017/Content/img/fb-2.png"></a>
+            <a href="@Model.TwitterLink"><img src="~/Themes/ags2017/Content/img/twt-2.png"></a>
+            <a href="#"><img src="~/Themes/ags2017/Content/img/inst-2.png"></a>
+        </span>
+    </div>
+</div>*@
+
+<div class="footer__sosyal-medya">
+    <h5>Bizi Takip Edin..</h5>
+    <span class="social-icons">
+        <a href="@Model.FacebookLink"><img src="~/Themes/ags2017/Content/Index/img/fb.png"></a>
+        <a href="@Model.TwitterLink"><img src="~/Themes/ags2017/Content/Index/img/Capture.png"></a>
+        <a href="https://www.instagram.com/ugurarslanlipstick/"><img src="~/Themes/ags2017/Content/Index/img/inst.png"></a>
+    </span>
+</div>
+@*
+<ul class="networks">
+	@if (!string.IsNullOrEmpty(Model.FacebookLink))
+	{
+		<li class="facebook"><a href="@Model.FacebookLink" target="_blank">@T("Footer.FollowUs.Facebook")</a></li>
+	}
+	@if (!string.IsNullOrEmpty(Model.TwitterLink))
+	{
+		<li class="twitter"><a href="@Model.TwitterLink" target="_blank">@T("Footer.FollowUs.Twitter")</a></li>
+	}
+	@if (Model.NewsEnabled)
+	{
+		<li class="rss"><a href="@Url.RouteUrl("NewsRSS", new {languageId = Model.WorkingLanguageId})">@T("Footer.FollowUs.RSS")</a></li>
+	}
+	@if (!string.IsNullOrEmpty(Model.YoutubeLink))
+	{
+		<li class="youtube"><a href="@Model.YoutubeLink" target="_blank">@T("Footer.FollowUs.Youtube")</a></li>
+	}
+	@if (!string.IsNullOrEmpty(Model.GooglePlusLink))
+	{
+		<li class="google-plus"><a href="@Model.GooglePlusLink" target="_blank">@T("Footer.FollowUs.GooglePlus")</a></li>
+	}
+</ul>*@

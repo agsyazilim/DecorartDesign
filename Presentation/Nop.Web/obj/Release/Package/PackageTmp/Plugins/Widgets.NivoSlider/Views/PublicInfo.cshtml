@@ -1,0 +1,61 @@
+﻿@model Nop.Plugin.Widgets.NivoSlider.Models.PublicInfoModel
+@{
+    Layout = "";
+
+    Html.AddScriptParts("~/Plugins/Widgets.NivoSlider/Scripts/jquery.nivo.slider.js");
+    Html.AddCssFileParts("~/Plugins/Widgets.NivoSlider/Content/nivoslider/nivo-slider.css");
+    //Html.AddCssFileParts("~/Plugins/Widgets.NivoSlider/Content/nivoslider/themes/custom/custom.css");
+}
+@using Nop.Web.Framework.UI
+
+@helper RenderSliderLine(string pictureUrl, string text, string link)
+{
+    if (!string.IsNullOrEmpty(pictureUrl))
+    {
+        if (!string.IsNullOrEmpty(link))
+        {
+            <a href="@link">
+                <img src="@pictureUrl" data-thumb="@pictureUrl"   alt="" title="@text" />
+            </a>
+    }
+    else
+    {
+            <a href="javascript:void();">
+                <img src="@pictureUrl" data-thumb="@pictureUrl" alt="" title="@text" />
+            </a>
+    }
+}
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="slider-wrapper theme-default">
+            <div id="slider" class="nivoSlider">
+                @RenderSliderLine(Model.Picture1Url, Model.Text1, Model.Link1)
+                @RenderSliderLine(Model.Picture2Url, Model.Text2, Model.Link2)
+                @RenderSliderLine(Model.Picture3Url, Model.Text3, Model.Link3)
+                @RenderSliderLine(Model.Picture4Url, Model.Text4, Model.Link4)
+                @RenderSliderLine(Model.Picture5Url, Model.Text5, Model.Link5)
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="container buyuk-kutular">
+    <div class="row ust">
+        <div class="col-xs-12 col-sm-8">
+            <a href="@Model.Link6"><img src="@Model.Picture6Url" class="img-responsive"></a>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <a href="@Model.Link7"><img src="@Model.Picture7Url" class="img-responsive"></a>
+        </div>
+    </div>
+    <div class="row alt">
+        <div class="col-xs-12 col-sm-6">
+            <a href="@Model.Link8"><img src="@Model.Picture8Url" class="img-responsive"></a>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <a href="@Model.Link9"><img src="@Model.Picture9Url" class="img-responsive"></a>
+        </div>
+    </div>
+</div>

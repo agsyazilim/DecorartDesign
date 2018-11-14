@@ -1,0 +1,10 @@
+﻿@model LogoModel
+@using Nop.Web.Models.Common;
+<div class="col-sm-4 col-xs-9  header__logo">
+    <a href="@Url.RouteUrl("HomePage")" class="header__logo__image hidden-xs">
+        <img alt="@Model.StoreName" class="img-responsive" src="@Model.LogoPath">
+    </a>
+    <a href="@Url.RouteUrl("HomePage")" class="header__logo__image visible-xs" style="margin-top: 10px">
+        <img alt="@Model.StoreName" src="@Model.LogoPath" class="img-responsive">
+    </a>
+</div>

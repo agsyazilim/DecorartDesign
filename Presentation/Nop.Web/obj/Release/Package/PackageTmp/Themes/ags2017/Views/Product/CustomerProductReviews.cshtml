@@ -1,0 +1,77 @@
+﻿@model CustomerProductReviewsModel
+@using Nop.Web.Models.Catalog
+@using Nop.Web.Models.Customer;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.CustomerProductReviews").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-my-product-reviews-list-page");
+}
+@section left
+{
+    @Html.Action("CustomerNavigation", "Customer", new { selectedTabId = CustomerNavigationEnum.ProductReviews })
+}
+
+
+    
+        <h3>@T("Account.MyAccount") - @T("Account.CustomerProductReviews")</h3>
+    <div class="urun-yorum">
+        @if (Model.ProductReviews.Count > 0)
+        {
+            foreach (var review in Model.ProductReviews)
+            {
+                @GetReviewRow(review)
+            }
+            var pager = Html.Pager(Model.PagerModel);
+            if (!MvcHtmlString.IsNullOrEmpty(pager))
+            {
+                <div class="pager">
+                    @pager
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-data">
+                @T("Account.CustomerProductReviews.NoRecords")
+            </div>
+        }
+    </div>
+
+@helper GetReviewRow(CustomerProductReviewModel review)
+{
+int ratingPercent = review.Rating * 20;
+    <div class="yorum">
+        <h5>
+            <text>@review.Title</text> @(!string.IsNullOrEmpty(review.ApprovalStatus) ? string.Format(" - {0}", review.ApprovalStatus) : null)
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="@ratingPercent" aria-valuemin="0" aria-valuemax="100" style="width: @(ratingPercent)%;">
+                    @(ratingPercent)%
+                </div>
+            </div>
+        </h5>
+            <p>
+                @Html.Raw(Nop.Core.Html.HtmlHelper.FormatText(review.ReviewText, false, true, false, false, false, false))
+            </p>
+        <p>
+            @T("Account.CustomerProductReviews.ProductReviewFor") : <a href="@Url.RouteUrl("Product", new {SeName = review.ProductSeName})">@review.ProductName</a> 
+            | @T("Reviews.Date") @review.WrittenOnStr
+        </p>
+        @{ 
+            review.ReplyText = "Deneme Reply";
+        }
+            @if (!String.IsNullOrEmpty(review.ReplyText))
+            {
+                <div class="reply">
+                    <div class="reply-header">
+                        @T("Reviews.Reply")
+                    </div>
+                    <div class="reply-text">
+                        @Html.Raw(Nop.Core.Html.HtmlHelper.FormatText(review.ReplyText, false, true, false, false, false, false))
+                    </div>
+                </div>
+            }
+        </div>
+}

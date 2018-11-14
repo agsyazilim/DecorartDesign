@@ -1,0 +1,10 @@
+﻿@model ProductDetailsModel
+@using Nop.Web.Models.Catalog;
+@if (!String.IsNullOrWhiteSpace(Model.StockAvailability) || Model.DisplayBackInStockSubscription)
+{
+        if (!String.IsNullOrWhiteSpace(Model.StockAvailability))
+        {
+                <span>@T("Products.Availability") : @Model.StockAvailability @Html.Partial("_BackInStockSubscription", Model)</span>
+        }
+        
+}

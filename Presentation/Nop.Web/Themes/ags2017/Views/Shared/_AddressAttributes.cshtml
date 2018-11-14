@@ -1,0 +1,17 @@
+﻿@model IList<Nop.Web.Models.Common.AddressAttributeModel>
+@using Nop.Core.Domain.Catalog;
+@foreach (var attribute in Model)
+{
+    string controlId = string.Format("address_attribute_{0}", attribute.Id);
+    string textPrompt = attribute.Name;
+    <div class="form-group clearfix">
+        <label class="col-lg-2 col-md-2 col-sm-2 col-xs-12 text-label">
+            @textPrompt
+        </label>
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
+            <input name="@(controlId)" type="text" class="form-control text-input" id="@(controlId)" value="@attribute.DefaultValue" />
+
+        </div>
+    </div>
+
+}

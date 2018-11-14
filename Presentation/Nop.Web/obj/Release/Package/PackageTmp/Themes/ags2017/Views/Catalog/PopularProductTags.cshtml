@@ -1,0 +1,38 @@
+﻿@model PopularProductTagsModel
+@using Nop.Web.Models.Catalog;
+@using System.Text;
+@if (Model.Tags.Count > 0)
+{
+    Random rd = new Random();
+    string fontsize = "";
+    <div>
+        <div class="yan-kategori__baslik">
+            @T("Products.Tags.Popular")
+        </div>
+        @foreach (var item in Model.Tags)
+        {
+            fontsize = rd.Next(10, 18).ToString() + "px";
+           <a href="@Url.RouteUrl("ProductsByTag", new { productTagId = item.Id, SeName = item.SeName })" style="font-size:@fontsize">
+               @item.Name
+           </a>
+        }
+    </div>
+    @*<script>
+        var myTags = [
+        @{ 
+            Random rd = new Random();
+            int index = 1;
+        }
+        @foreach (var item in Model.Tags)
+        {
+            <text>{ text: "@item.Name", weight:@rd.Next(10,18) ,link:"@Url.RouteUrl("ProductsByTag", new { productTagId = item.Id, SeName = item.SeName })" }</text>
+            index++;
+            if(index != (Model.Tags.Count+1))
+            {
+                <text>,</text>
+            }
+        }
+        ];
+        $(".yan-kategori__tags").jQCloud(myTags);
+    </script>*@
+}

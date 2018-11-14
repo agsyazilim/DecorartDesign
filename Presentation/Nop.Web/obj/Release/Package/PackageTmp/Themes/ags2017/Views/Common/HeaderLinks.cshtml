@@ -1,0 +1,44 @@
+﻿@model HeaderLinksModel
+@using Nop.Web.Models.Common;
+
+<div class="btn-group hidden-xs">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img src="/Themes/ags2017/Content/img/login.PNG" class="img-icon-big">
+    </button>
+    <ul class="dropdown-menu" style="display: none;">
+        @if (Model.IsAuthenticated)
+        {
+            <li>
+                <a href="@Url.RouteUrl("CustomerInfo")">
+                    <img src="~/Themes/ags2017/Content/img/login.png" class="img-icon" /> @T("Account.MyAccount")
+                </a>
+            </li>
+            <li>
+                <a href="@Url.RouteUrl("Logout")">
+                    <img src="~/Themes/ags2017/Content/img/signout.png" class="img-icon" /> @T("Account.Logout")
+                </a>
+            </li>
+        }
+        else
+        {
+            @*<li>
+                <a href="/Plugins/ExternalAuthFacebook/Login">
+                    <img src="~/Themes/ags2017/Content/img/fb-4.png" class="fb-icon-top" /> Facebook ile Giriş
+                </a>
+            </li>*@
+            <li>
+                <a href="@Url.RouteUrl("Login")">
+                    <img src="~/Themes/ags2017/Content/img/login.png" class="img-icon" /> @T("Account.Login")
+                </a>
+            </li>
+            <li>
+                <a href="@Url.RouteUrl("Register")">
+                    <img src="~/Themes/ags2017/Content/img/reg.png" class="img-icon" /> @T("Account.Register")
+                </a>
+            </li>
+        }
+
+    </ul>
+</div>
+
+					

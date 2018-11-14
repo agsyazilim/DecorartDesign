@@ -1,0 +1,59 @@
+﻿@model OrderTotalsModel
+@using Nop.Web.Models.ShoppingCart;
+<div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 cart-calculate-area">
+    <div class="col-lg-8 col-xs-8 col-md-8 col-sm-8 calculate-text">@T("ShoppingCart.Totals.SubTotal"):</div>
+    <div class="col-lg-4 col-xs-4 col-md-4 col-sm-4 prl-0 calculate-text text-right">@Model.SubTotal</div>
+    @if (!String.IsNullOrEmpty(Model.SubTotalDiscount))
+    {
+        <div class="col-lg-8 col-xs-8 col-md-8 col-sm-8 calculate-text">@T("ShoppingCart.Totals.SubTotalDiscount"):</div>
+        <div class="col-lg-4 col-xs-4 col-md-4 col-sm-4 calculate-text text-right">@Model.SubTotalDiscount</div>
+    }
+    @if (!Model.HideShippingTotal)
+    {
+        <div class="col-lg-4 col-xs-4 col-md-4 col-sm-4 calculate-text">@T("ShoppingCart.Totals.Shipping"):</div>
+        <div class="col-lg-8 col-xs-8 col-md-8 col-sm-8 calculate-text text-right">
+
+            @if (Model.RequiresShipping && !String.IsNullOrEmpty(Model.SelectedShippingMethod))
+            {
+                <span class="">@T("ShoppingCart.Totals.Shipping.Method", Model.SelectedShippingMethod)</span>
+            }
+            @if (Model.RequiresShipping)
+            {
+                if (!String.IsNullOrEmpty(Model.Shipping))
+                {
+                    <span class="">@Model.Shipping</span>
+                }
+                else
+                {
+                    <span>@T("ShoppingCart.Totals.CalculatedDuringCheckout")</span>
+                }
+            }
+            else
+            {
+                <span>@T("ShoppingCart.Totals.Shipping.NotRequired")</span>
+            }
+        </div>
+    }
+    @if (Model.WillEarnRewardPoints > 0)
+    {
+        <div class="col-lg-8 col-xs-8 col-md-8 col-sm-8 calculate-text" style="font-size: 13px">@T("ShoppingCart.Totals.RewardPoints.WillEarn"):</div>
+        <div class="col-lg-4 col-xs-4 col-md-4 col-sm-4 calculate-text text-right">@string.Format(T("ShoppingCart.Totals.RewardPoints.WillEarn.Point").Text, Model.WillEarnRewardPoints)</div>
+    }
+    @if (!String.IsNullOrEmpty(Model.OrderTotalDiscount))
+    {
+        <div class="col-lg-8 col-xs-8 col-md-8 col-sm-8 calculate-total-text">@T("ShoppingCart.Totals.OrderTotalDiscount"):</div>
+        <div class="col-lg-4 col-xs-4 col-md-4 col-sm-4 calculate-total text-right">@Model.OrderTotalDiscount</div>
+    }
+    <div class="col-lg-8 col-xs-8 col-md-8 col-sm-8 calculate-total-text">@T("ShoppingCart.Totals.OrderTotal"):</div>
+    <div class="col-lg-4 col-xs-4 col-md-4 col-sm-4 calculate-total text-right">
+        @if (!String.IsNullOrEmpty(Model.OrderTotal))
+        {
+            <span class=""><strong>@Model.OrderTotal</strong></span>
+        }
+        else
+        {
+            <span>@T("ShoppingCart.Totals.CalculatedDuringCheckout")</span>
+        }
+
+    </div>
+</div>

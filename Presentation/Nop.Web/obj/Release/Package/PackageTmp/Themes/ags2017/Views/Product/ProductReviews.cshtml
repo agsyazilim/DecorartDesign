@@ -1,0 +1,134 @@
+﻿@model ProductReviewsModel
+@using Nop.Web.Models.Catalog;
+@{
+    if (Request.QueryString["fromDetailPage"] != null && Request.QueryString["fromDetailPage"].ToString() == "0")
+    {
+        Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+        //title
+        Html.AddTitleParts(Model.ProductName);
+        Html.AddTitleParts(T("PageTitle.ProductReviews").Text);
+        //page class
+        Html.AppendPageCssClassParts("html-product-reviews-page");
+    }
+    else
+    {
+        Layout = "";
+    }
+}
+@if (Request.QueryString["fromDetailPage"] != null && Request.QueryString["fromDetailPage"].ToString() == "0")
+{
+    <div class="container">
+        <div class="page product-reviews-page">
+            <div class="page-title">
+                <h1>@T("Reviews.ProductReviewsFor") <a href="@Url.RouteUrl("Product", new { SeName = Model.ProductSeName })">@Model.ProductName</a></h1>
+            </div>
+            <div class="page-body">
+                @Html.Widget("productreviews_page_top", Model.ProductId)
+                @if (Model.AddProductReview.SuccessfullyAdded)
+                {
+                    <div class="result">
+                        @Model.AddProductReview.Result
+                    </div>
+                }
+                else
+                {
+                    <div class="write-review" id="review-form">
+                        <div class="title">
+                            <strong>@T("Reviews.Write")</strong>
+                        </div>
+                        @using (Html.BeginForm())
+                    {
+                            @Html.AntiForgeryToken()
+                            var validationSummary = Html.ValidationSummary(true);
+                            if (!MvcHtmlString.IsNullOrEmpty(validationSummary))
+                            {
+                                <div class="message-error">@validationSummary</div>
+                            }
+                            <div class="input-with-icon">
+                                <span class="input-icon">
+                                    <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-mail.png" class="img-responsive">
+                                    <span class="input-required">@Html.RequiredHint()</span>
+                                </span>
+                                @Html.TextBoxFor(model => model.AddProductReview.Title, Model.AddProductReview.CanCurrentCustomerLeaveReview ? (object)(new { @class = "review-title form-control" , placeholder=T("admin.catalog.productreviews.fields.title.hint").Text}) : (object)(new { @class = "review -title form-control", disabled = "disabled", placeholder = T("admin.catalog.productreviews.fields.title.hint").Text }))
+                                <p class="help-block text-danger">@Html.ValidationMessageFor(model => model.AddProductReview.Title)</p>
+                            </div>
+                            <div class="input-with-icon textarea-with-icon">
+                                <span class="input-icon">
+                                    <img src="~/Themes/ags2017/Content/img/input-icons/input-icon-mail.png" class="img-responsive">
+                                </span>
+                               @Html.TextAreaFor(model => model.AddProductReview.ReviewText, Model.AddProductReview.CanCurrentCustomerLeaveReview ? (object)(new { @class = "review-text form-control",placeholder=T("admin.catalog.productreviews.fields.reviewtext.hint").Text }) : (object)(new { @class = "review -text form-control", disabled = "disabled", placeholder = T("admin.catalog.productreviews.fields.reviewtext.hint").Text }))
+                                <p class="help-block text-danger">@Html.ValidationMessageFor(model => model.AddProductReview.ReviewText)</p>
+                            </div>
+                            <div>
+                                <div class="radio">
+                                    <label>
+                                        @Html.RadioButtonFor(model => model.AddProductReview.Rating, "1", new {@class= "radioButton", id = "addproductrating_1" })
+                                        Çok Kötü
+                                    </label>
+                                    <label>
+                                        @Html.RadioButtonFor(model => model.AddProductReview.Rating, "2", new {@class= "radioButton", id = "addproductrating_2" })
+                                        Kötü
+                                    </label>
+                                    <label>
+                                        @Html.RadioButtonFor(model => model.AddProductReview.Rating, "3", new { @class = "radioButton", id = "addproductrating_3" })
+                                        Orta
+                                    </label>
+                                    <label>
+                                        @Html.RadioButtonFor(model => model.AddProductReview.Rating, "4", new { @class = "radioButton", id = "addproductrating_4" })
+                                        İyi
+                                    </label>
+                                    <label>
+                                        @Html.RadioButtonFor(model => model.AddProductReview.Rating, "5", new { @class = "radioButton", id = "addproductrating_5" })
+                                        Çok İyi
+                                    </label>
+                                </div>
+                            </div>
+                            if (Model.AddProductReview.DisplayCaptcha)
+                            {
+                                <div class="captcha-box">
+                                    @Html.Raw(Html.GenerateCaptcha())
+                                </div>
+                            }
+                            
+                            <div>
+                                <button type="submit" name="add-review" class="button-1 write-product-review-button btn btn-koyugri">
+                                    @T("Reviews.SubmitButton")
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                @Html.Widget("productreviews_page_bottom", Model.ProductId)
+            </div>
+        </div>
+    </div>
+}
+@if (Request.QueryString["fromDetailPage"] == null)
+{
+    if (Model.Items.Count > 0)
+    {
+            foreach (var review in Model.Items)
+            {
+                int ratingPercent = review.Rating * 20;
+            <div class="yorum">
+                <h5>@review.Title</h5>
+                <p>@Html.Raw(Nop.Core.Html.HtmlHelper.FormatText(review.ReviewText, false, true, false, false, false, false))</p>
+                <p><label>@T("Reviews.From"):</label>
+                @if (review.AllowViewingProfiles)
+                {
+                    <a href="@Url.RouteUrl("CustomerProfile", new { id = review.CustomerId })">@(review.CustomerName)</a>
+                }
+                else
+                {
+                    @review.CustomerName
+                } <label>@T("Reviews.Date"):</label>
+                <span>@review.WrittenOnStr</span> 
+                <span class="progress">
+                    <span class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="@(ratingPercent)" aria-valuemin="0"
+                          aria-valuemax="5"></span>
+                </span>
+                </p>
+            </div>
+            }
+    }
+}

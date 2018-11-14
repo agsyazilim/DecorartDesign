@@ -1,0 +1,37 @@
+﻿@model IList<ProductOverviewModel>
+
+@using Nop.Web.Models.Catalog;
+@if (Model.Count > 0)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="content__urun-slider col-xs-12 col-sm-11">
+                <button type="button" class="slider-left-arrow"></button>
+                <button type="button" class="slider-right-arrow"></button>
+                <div class="urun-slider__head">
+                    @T("Bestsellers")
+                </div>
+                <div class="urun-slider__urunler">
+                    @foreach (var item in Model)
+                    {
+                        @Html.Partial("_ProductBox", item)
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="product-grid bestsellers">
+        <div class="title">
+            <strong>@T("Bestsellers")</strong>
+        </div>
+        <div class="item-grid">
+            @foreach (var item in Model)
+            {
+                <div class="item-box">
+                    @Html.Partial("_ProductBox", item)
+                </div>
+            }
+        </div>
+    </div>*@
+}

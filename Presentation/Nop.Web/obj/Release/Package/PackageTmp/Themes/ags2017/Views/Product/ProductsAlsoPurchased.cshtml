@@ -1,0 +1,23 @@
+﻿@model IList<ProductOverviewModel>
+
+@using Nop.Web.Models.Catalog;
+@if (Model.Count > 0)
+{
+    <div class="">
+        <div class="row">
+            <div class="col-xs-11">
+                <button type="button" class="slider-left-arrow"></button>
+                <button type="button" class="slider-right-arrow"></button>
+                <div class="urun-slider__head">
+                    @T("Products.AlsoPurchased")
+                </div>
+                <div class="urun-slider__urunler">
+                    @foreach (var item in Model)
+                    {
+                        <text>@Html.Partial("_ProductBox", item)</text>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

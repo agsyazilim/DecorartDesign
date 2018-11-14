@@ -1,0 +1,34 @@
+﻿@model ProductDetailsModel
+@using Nop.Core.Domain.Catalog
+@using Nop.Web.Models.Catalog
+
+    @*SKU*@
+    @if ((!string.IsNullOrWhiteSpace(Model.Sku) || Model.ManageInventoryMethod == ManageInventoryMethod.ManageStockByAttributes) && Model.ShowSku)
+    {
+        <span class="label">
+            @T("Products.Sku"):
+            <span class="value" itemprop="sku" id="sku-@Model.Id">@Model.Sku</span>
+        </span>
+
+    }
+    @*Manufacturer part number*@
+    @if ((!string.IsNullOrWhiteSpace(Model.ManufacturerPartNumber) || Model.ManageInventoryMethod == ManageInventoryMethod.ManageStockByAttributes) && Model.ShowManufacturerPartNumber)
+    {
+        <span>
+            @T("Products.ManufacturerPartNumber"):
+            <span class="value" id="mpn-@Model.Id">@Model.ManufacturerPartNumber</span>
+        </span>
+    }
+    @*GTIN*@
+    @if ((!string.IsNullOrWhiteSpace(Model.Gtin) || Model.ManageInventoryMethod == ManageInventoryMethod.ManageStockByAttributes) && Model.ShowGtin)
+    {
+        <span>
+            @T("Products.GTIN"):
+             <span class="value" id="gtin-@Model.Id">@Model.Gtin</span>
+        </span>
+    }
+    @*Vendor*@
+    @if (Model.ShowVendor)
+    {
+            <span>@T("Products.Vendor") : <a href="@Url.RouteUrl("Vendor", new { SeName = Model.VendorModel.SeName })">@Model.VendorModel.Name</a></span>
+    }

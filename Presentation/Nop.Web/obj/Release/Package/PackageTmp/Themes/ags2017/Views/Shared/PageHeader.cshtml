@@ -1,0 +1,65 @@
+﻿@using Nop.Core
+@using Nop.Core.Domain.Customers
+@using Nop.Core.Infrastructure
+@using Nop.Web.Factories
+@{
+    Layout = null;
+}
+@{
+    var isregistered = EngineContext.Current.Resolve<IWorkContext>().CurrentCustomer.IsRegistered(); 
+}
+<div class="bayi-giris__container hidden-xs">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 top__bayi-girisi">
+                <ul class="col-sm-6 col-md-7 hidden-xs">
+                    <li>
+                        <a href="tel:+902324259319">
+                            <img src="~/Themes/ags2017/Content/img/arama-koyu.png" class="img-icon" />&nbsp;Bize Ulaşın (0530 874 3255)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <img src="~/Themes/ags2017/Content/img/arama-koyu.png" class="img-icon" />&nbsp;100TL Üzeri Ücretsiz Kargo
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="col-sm-6 col-md-5 col-xs-12 login_to-side pull-right">
+                        @if (isregistered)
+                        {
+                            <li style="display: none" class="visible-xs">
+                                <a href="@Url.RouteUrl("CustomerInfo")">
+                                    <img src="~/Themes/ags2017/Content/img/login-koyu.png" class="img-icon" /> @T("Account.MyAccount")
+                                </a>
+                            </li>
+                            <li style="display: none" class="visible-xs">
+                                <a href="@Url.RouteUrl("Logout")">
+                                    <img src="~/Themes/ags2017/Content/img/signout.png" class="img-icon" /> @T("Account.Logout")
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li style="display: none" class="visible-xs">
+                                <a href="@Url.RouteUrl("Login")">
+                                    <img src="~/Themes/ags2017/Content/img/login-koyu.png" class="img-icon" /> @T("Account.Login")
+                                </a>
+                            </li>
+                            <li style="display: none" class="visible-xs">
+                                <a href="@Url.RouteUrl("Register")">
+                                    <img src="~/Themes/ags2017/Content/img/reg-koyu.png" class="img-icon" /> @T("Account.Register")
+                                </a>
+                            </li>
+                        }
+                    <li>
+                        <a href="/Plugins/ExternalAuthFacebook/Login">
+                            <img src="~/Themes/ags2017/Content/img/fb-4.png" class="fb-icon-top"/> Facebook ile Giriş
+                        </a>
+                    </li>
+                    @Html.Action("LanguageSelector", "Common")
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
